@@ -1,9 +1,9 @@
-# lotto
-TX Lotto Number Generator
+# TX Lotto QR Code Generator
+
+This shell script scrapes some "suggested" lotto numbers from http://www.txlotteryx.com/Lotto/intelligent-combos.htm, and generates QR codes that can be scanned by a lotto machine at the grocery store.
 
 
-## Setup EC2 Instance
-
+## Setup
 
 ### Setup httpd
 
@@ -27,7 +27,6 @@ sudo yum install qrencode
 sudo yum install lynx
 ```
 
-
 ### Setup script
 
 ```sh
@@ -39,6 +38,5 @@ then add cron job
 
 ```sh
 # Generate QR code every night. 11:15 UTC = 5/6:15 AM Central
-15 11 * * * /home/ec2-user/lotto.sh
-```
+15 11 * * * /home/ec2-user/lotto.sh```
 
