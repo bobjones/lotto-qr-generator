@@ -38,5 +38,6 @@ then add cron job
 
 ```sh
 # Generate QR code every night. 11:15 UTC = 5/6:15 AM Central
-15 11 * * * /home/ec2-user/lotto.sh```
+15 11 * * * /home/ec2-user/lotto.sh
+```
 
