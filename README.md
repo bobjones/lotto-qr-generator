@@ -42,20 +42,3 @@ then add cron job
 15 11 * * * /home/ec2-user/lotto.sh
 ```
 
-
-### Setup Node
-
-Google install nvm. Today it's:
-
-```sh
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-```
-
-exit
-
-re-login
-
-```sh
-nvm install 16    # Today, March 2023, LTS 18 is not supported. Have to back port
-npm install moment
-```
