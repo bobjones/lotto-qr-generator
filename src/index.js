@@ -1,9 +1,11 @@
 import { parse } from 'csv-parse/sync';
 import * as util from './util.js';
 
+const PREVIOUS_DRAWINGS = 150;
+
 // Use outdated local source file for development or remote for prod
-const csvContents = util.getLocalCsv();
-// const csvContents = await util.getAndSaveRemoteCsv();
+// const csvContents = util.getLocalCsv();
+const csvContents = await util.getAndSaveRemoteCsv();
 
 // Parse CSV string into array
 let allDrawings = parse(csvContents);
@@ -34,10 +36,10 @@ allDrawings.sort((a, b) => {
 });
 
 // Write for debugging
-util.asyncWriteFile('allDrawings.json', util.prettyJson(allDrawings));
+util.asyncWriteFile(util.BUILD_DIR + 'allDrawings.json', util.prettyJson(allDrawings));
 
-// Only consider the last 150 drawings
-const recentDrawings = allDrawings.slice(0, 150);
+// Only consider the last x number of drawings
+const recentDrawings = allDrawings.slice(0, PREVIOUS_DRAWINGS);
 
 console.log(`Parsed a total of ${allDrawings.length} past drawings, but only considering the last ${recentDrawings.length} from ${recentDrawings[recentDrawings.length - 1][1]}/${recentDrawings[recentDrawings.length - 1][2]}/${recentDrawings[recentDrawings.length - 1][3]} - ${recentDrawings[0][1]}/${recentDrawings[0][2]}/${recentDrawings[0][3]}.`);
 
@@ -75,11 +77,25 @@ favoriteUniqueNumbers = favoriteUniqueNumbers.concat(util.pickFirstUniqueItems(s
 const picks = util.generateLottoWheel(favoriteUniqueNumbers).filter((_, i) => i % 3 === 0);
 
 // Generate 2, 5-combo QR codes because sometimes there's a buy 5 get 1 free sale, and the machine is too stupid to give 2 free on a single 10-combo ticket.
-await util.generateQR('qr1.png', util.qrString(picks.slice(0, 5)));
-await util.generateQR('qr2.png', util.qrString(picks.slice(5, picks.length)));
+// const tickets = [picks.slice(0, 5), picks.slice(5, picks.length)];
+const tickets = [[
+    [1,2,3,4,5,6],
+    [7,8,9,10,11,12],
+    [13,14,15,16,17,18],
+    [19,20,21,22,23,24],
+    [25,26,27,28,29,30]
+], picks.slice(5, picks.length)];
+await util.generateQR(util.BUILD_DIR + 'qr1.png', util.qrString(tickets[0]));
+await util.generateQR(util.BUILD_DIR + 'qr2.png', util.qrString(tickets[1]));
 
 // Update index.html
 const now = new Date().toLocaleString();
-util.updateHtml({ PICKS: util.prettyJson(picks), NOW_ENCODED: encodeURI(now), NOW: now });
+util.updateHtml({
+    PICKS: util.prettyJson(picks),
+    NOW_ENCODED: encodeURI(now),
+    NOW: now,
+    TICKET1: util.ticketHtml(tickets[0]),
+    TICKET2: util.ticketHtml(tickets[1])
+});
 
 console.log("Done.");

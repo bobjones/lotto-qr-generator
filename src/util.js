@@ -1,8 +1,17 @@
 import fs from 'fs';
 import qrCode from 'qrcode';
 
+export const BUILD_DIR = 'build/';
+export const SOURCE_DIR = 'src/';
+
 // Generate string for QR code
 export function qrString(drawings) {
+    // LOT21:WMD1JCMNS - mega millions
+    //        ^ M = Mega millions, L = TX Lotto
+    // LOT21:WLD2JCMNS
+    //          ^ 2 draws
+    // LOT21:WLD2JCMYS
+    //              ^ Y = Extra! option, N = No extra
     // LOT21:WLD1JCMNS010203040506495051525354 example w/ combo 1-6 and combo 49-54
     //            ^ C = cash option, A = annual
 
@@ -23,7 +32,7 @@ export function qrString(drawings) {
 export async function generateQR(filename, text) {
     console.log(`Trying to generate QR code for text: '${text}'.`);
     try {
-        await qrCode.toFile(filename, text);
+        await qrCode.toFile(filename, text, { errorCorrectionLevel: 'Q' });
     } catch (error) {
         throw new Error(`Could not generate QR code: '${error}'`);
     }
@@ -73,7 +82,7 @@ export function findPairs(inputArray) {
 }
 
 // For development, read an outdated local CSV instead of fetching an updated one.
-const LOCAL_CSV = './lottotexas.csv';
+const LOCAL_CSV = BUILD_DIR + 'lottotexas.csv';
 export function getLocalCsv() {
     console.log(`Using local drawing results from: '${LOCAL_CSV}'.`)
     try {
@@ -97,11 +106,11 @@ export async function getAndSaveRemoteCsv() {
 
 // Update HTML
 export function updateHtml(replacements) {
-    let html = fs.readFileSync('./index_template.html', { encoding: 'utf8' });
+    let html = fs.readFileSync(SOURCE_DIR + 'index_template.html', { encoding: 'utf8' });
     for (const placeholder in replacements) {
         html = html.replaceAll(placeholder, replacements[placeholder]);
     }
-    fs.writeFileSync('./index.html', html);
+    fs.writeFileSync(BUILD_DIR + 'index.html', html);
 }
 
 // Helper to try to write to a file in the background. Will message on failure, but not block/kill execution.
@@ -113,6 +122,10 @@ export function asyncWriteFile(filename, contents) {
             console.log(`Successfully wrote '${filename}'.`)
         }
     });
+}
+
+export function ticketHtml(combos) {
+    return combos.map(c=>c.join('-')).join('<br />\n');
 }
 
 export function pairKey(num1, num2) {
