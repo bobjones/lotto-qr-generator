@@ -2,7 +2,7 @@
 
 The Texas lottery has an app that let's you pick a lotto game and numbers that can be played at a lotto vending machine at a grocery or convenient store. After you pick your game, numbers, then options like "cash" or "annual" payment, etc. the app shows you a QR code to then show the vending machine. I picked the game "Texas Lottery", No "Extra!", and "cash" payment options with only 2 combos: 1-2-3-4-5-6, and 49-50-51-52-53-54 which gave me this screen:
 
-![Lotto App Screenshot](/lotto-app.jpg)
+![Lotto App Screenshot](images/lotto-app.jpg)
 
 The value of this QR code is `LOT21:WLD1JCMNS010203040506495051525354`. After changing my options mentioned above, it was pretty easy to determine the following:
 
@@ -18,6 +18,10 @@ LOT21:WLD1JCMNS010203040506495051525354
 Taking this into account, I initially wrote a shell script to scrape a website with suggested combinations, then generate my own QR code based on those numbers. However, at the time, the page didn't have any randomness to it, so it meant that if someone else used suggestions from that page, I would be sharing my winnings with them.
 
 So I re-wrote it in Node, and threw it on an ec2 instance that I could hit from my phone when I go to the grocery store. This script generates a page that looks for highest frequency pairs and singles over the last "x" number of drawings. I'm currently using 150 drawings, but if you want to use this as well, please change this number so we're less likely to share winnings!!!
+
+Here's what the final [index.html](build/index.html) looks like in a browser:
+
+![Lotto Script Screenshot](images/lotto-script.png)
 
 
 ## Node Version
