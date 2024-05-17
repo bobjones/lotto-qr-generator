@@ -24,32 +24,7 @@ Here's what the final [index.html](build/index.html) looks like in a browser:
 ![Lotto Script Screenshot](images/lotto-script.png)
 
 
-## Node Version
-
-This pulls all past drawings (since 1992!) for the TX lotto game from the official website, then generates QR codes for best combinations.
-
-
-### Setup Node
-
-Google install nvm. Today it's:
-
-```sh
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-```
-
-exit
-
-re-login
-
-```sh
-npm install
-```
-
-
-## Old shell version
-
-This shell script scrapes some "suggested" lotto numbers from http://www.txlotteryx.com/Lotto/intelligent-combos.htm, and generates QR codes that can be scanned by a lotto machine at the grocery store.
-
+## Setup EC2
 
 ### Setup httpd
 
@@ -65,6 +40,85 @@ cd /var/www/html/
 sudo chgrp ec2-user .
 sudo chmod 775 .
 ```
+
+### Setup git
+
+```sh
+cd ~
+sudo yum install git
+git clone https://github.com/mrbbdx/lotto-qr-generator
+```
+
+
+## Node Version
+
+This pulls all past drawings (since 1992!) for the TX lotto game from the official website, then generates QR codes for best combinations.
+
+### Setup Node
+
+Google install nvm. Today it's:
+
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+
+cd ~/lotto-qr-generator
+npm install
+```
+
+### Symlink Apache to Build Directory
+
+For whatever reason, _parent_ directories of symlinks are also required to have the execute privilege, so add it first.
+
+```sh
+chmod 711 ~
+cd /var/www/html/
+ln -s ~/lotto-qr-generator/build lotto
+```
+
+### Add systemd timer to re-generate page every night
+
+```sh
+sudo vi /etc/systemd/system/lotto.service
+```
+
+```
+[Unit]
+Description="Generate Lotto Page"
+
+[Service]
+ExecStart=cd /home/ec2-user/lotto-qr-generator/ && node src/index.js
+```
+
+```sh
+sudo vi /etc/systemd/system/lotto.timer
+```
+
+```
+[Unit]
+Description="Run script every night"
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=24h
+OnCalendar=Mon..Fri *-*-* 10:00:*
+Unit=lotto.service
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```sh
+sudo systemctl start lotto.timer
+sudo systemctl enable lotto.timer
+```
+
+
+## Old shell version
+
+This shell script scrapes some "suggested" lotto numbers from http://www.txlotteryx.com/Lotto/intelligent-combos.htm, and generates QR codes that can be scanned by a lotto machine at the grocery store.
+
 
 ### Install libraries
 
