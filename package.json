@@ -1,0 +1,10 @@
+{
+    "name": "tx-lotto-qr-code-generator",
+    "description": "Reads previous drawings and generates QR codes that can be scanned by a lotto vending machine",
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "csv-parse": "5.5.5",
+        "qrcode": "1.5.3"
+    }
+}

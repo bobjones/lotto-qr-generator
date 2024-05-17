@@ -3,7 +3,28 @@
 This shell script scrapes some "suggested" lotto numbers from http://www.txlotteryx.com/Lotto/intelligent-combos.htm, and generates QR codes that can be scanned by a lotto machine at the grocery store.
 
 
-## Setup
+## Node Setup
+
+
+### Setup Node
+
+Google install nvm. Today it's:
+
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+exit
+
+re-login
+
+```sh
+npm install
+```
+
+
+
+## Shell Setup
 
 ### Setup httpd
 
