@@ -78,13 +78,7 @@ const picks = util.generateLottoWheel(favoriteUniqueNumbers).filter((_, i) => i 
 
 // Generate 2, 5-combo QR codes because sometimes there's a buy 5 get 1 free sale, and the machine is too stupid to give 2 free on a single 10-combo ticket.
 // const tickets = [picks.slice(0, 5), picks.slice(5, picks.length)];
-const tickets = [[
-    [1,2,3,4,5,6],
-    [7,8,9,10,11,12],
-    [13,14,15,16,17,18],
-    [19,20,21,22,23,24],
-    [25,26,27,28,29,30]
-], picks.slice(5, picks.length)];
+const tickets = [picks.slice(0, 5), picks.slice(5, picks.length)];
 await util.generateQR(util.BUILD_DIR + 'qr1.png', util.qrString(tickets[0]));
 await util.generateQR(util.BUILD_DIR + 'qr2.png', util.qrString(tickets[1]));
 
