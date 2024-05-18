@@ -6,15 +6,13 @@ export const SOURCE_DIR = 'src/';
 
 // Generate string for QR code
 export function qrString(drawings) {
-    // LOT21:WMD1JCMNS - mega millions
-    //        ^ M = Mega millions, L = TX Lotto
-    // LOT21:WLD2JCMNS
-    //          ^ 2 draws
-    // LOT21:WLD2JCMYS
-    //              ^ Y = Extra! option, N = No extra
-    // LOT21:WLD1JCMNS010203040506495051525354 example w/ combo 1-6 and combo 49-54
-    //            ^ C = cash option, A = annual
-
+    // LOT21:WLD1JCMNS010203040506495051525354
+    //    | | | | ^ Beginning of selected numbers
+    //    | | | N = No "Extra!" option, Y = Yes
+    //    | | C = Cash Option, A = Annual
+    //    | 1 = 1 drawing per ticket
+    //    L = "Lottery" game, M = Mega Millions
+    
     let qrString = 'LOT21:WLD1JCMNS';
     drawings.forEach(drawing => {
         if (drawing.length !== 6) {

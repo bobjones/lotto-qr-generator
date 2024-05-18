@@ -83,7 +83,7 @@ await util.generateQR(util.BUILD_DIR + 'qr1.png', util.qrString(tickets[0]));
 await util.generateQR(util.BUILD_DIR + 'qr2.png', util.qrString(tickets[1]));
 
 // Update index.html
-const now = new Date().toLocaleString();
+const now = new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' });
 util.updateHtml({
     PICKS: util.prettyJson(picks),
     NOW_ENCODED: encodeURI(now),
