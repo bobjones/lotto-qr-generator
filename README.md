@@ -85,10 +85,13 @@ sudo vi /etc/systemd/system/lotto.service
 
 ```
 [Unit]
-Description="Generate Lotto Page"
+Description=Generate Lotto Page
 
 [Service]
-ExecStart=cd /home/ec2-user/lotto-qr-generator/ && node src/index.js
+Type=simple
+TimeoutSec=10
+WorkingDirectory=/home/ec2-user/lotto-qr-generator
+ExecStart=/home/ec2-user/.nvm/versions/node/v20.13.1/bin/node src/index.js
 ```
 
 ```sh
@@ -97,12 +100,10 @@ sudo vi /etc/systemd/system/lotto.timer
 
 ```
 [Unit]
-Description="Run script every night"
+Description=Run script every 9:00 AM UTC
 
 [Timer]
-OnBootSec=5min
-OnUnitActiveSec=24h
-OnCalendar=Mon..Fri *-*-* 10:00:*
+OnCalendar=*-*-* 9:00:00
 Unit=lotto.service
 
 [Install]
@@ -110,6 +111,10 @@ WantedBy=multi-user.target
 ```
 
 ```sh
+# Test runner
+systemd-analyze verify /etc/systemd/system/lotto.*
+journalctl -u lotto
+# Start and enabale
 sudo systemctl start lotto.timer
 sudo systemctl enable lotto.timer
 ```
