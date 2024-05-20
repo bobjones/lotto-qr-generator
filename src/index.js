@@ -79,8 +79,14 @@ const picks = util.generateLottoWheel(favoriteUniqueNumbers).filter((_, i) => i 
 // Generate 2, 5-combo QR codes because sometimes there's a buy 5 get 1 free sale, and the machine is too stupid to give 2 free on a single 10-combo ticket.
 // const tickets = [picks.slice(0, 5), picks.slice(5, picks.length)];
 const tickets = [picks.slice(0, 5), picks.slice(5, picks.length)];
-await util.generateQR(util.BUILD_DIR + 'qr1.png', util.qrString(tickets[0]));
-await util.generateQR(util.BUILD_DIR + 'qr2.png', util.qrString(tickets[1]));
+await util.generateQR(util.BUILD_DIR + 'qr1L.png', util.qrString(tickets[0]), 'L');
+await util.generateQR(util.BUILD_DIR + 'qr1M.png', util.qrString(tickets[0]), 'M');
+await util.generateQR(util.BUILD_DIR + 'qr1Q.png', util.qrString(tickets[0]));
+await util.generateQR(util.BUILD_DIR + 'qr1H.png', util.qrString(tickets[0]), 'H');
+await util.generateQR(util.BUILD_DIR + 'qr2L.png', util.qrString(tickets[1]), 'L');
+await util.generateQR(util.BUILD_DIR + 'qr2M.png', util.qrString(tickets[1]), 'M');
+await util.generateQR(util.BUILD_DIR + 'qr2Q.png', util.qrString(tickets[1]));
+await util.generateQR(util.BUILD_DIR + 'qr2H.png', util.qrString(tickets[1]), 'H');
 
 // Update index.html
 const now = new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' });

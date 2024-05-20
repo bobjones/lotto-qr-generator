@@ -27,10 +27,10 @@ export function qrString(drawings) {
 }
 
 // Generate QR image
-export async function generateQR(filename, text) {
+export async function generateQR(filename, text, errorLevel = 'Q') {
     console.log(`Trying to generate QR code for text: '${text}'.`);
     try {
-        await qrCode.toFile(filename, text, { errorCorrectionLevel: 'Q' });
+        await qrCode.toFile(filename, text, { errorCorrectionLevel: errorLevel });
     } catch (error) {
         throw new Error(`Could not generate QR code: '${error}'`);
     }
