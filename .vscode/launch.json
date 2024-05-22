@@ -8,8 +8,11 @@
             "skipFiles": [
                 // "<node_internals>/**"
             ],
+            "env": {
+                "PREVIOUS_DRAWINGS": "100"
+            },
             "program": "${workspaceFolder}/src/index.js",
-            "internalConsoleOptions": "openOnSessionStart"            
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

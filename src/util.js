@@ -5,20 +5,20 @@ export const BUILD_DIR = 'build/';
 export const SOURCE_DIR = 'src/';
 
 // Generate string for QR code
-export function qrString(drawings) {
+export function qrString(combos) {
     // LOT21:WLD1JCMNS010203040506495051525354
-    //    | | | | ^ Beginning of selected numbers
-    //    | | | N = No "Extra!" option, Y = Yes
-    //    | | C = Cash Option, A = Annual
-    //    | 1 = 1 drawing per ticket
-    //    L = "Lottery" game, M = Mega Millions
-    
+    //        | | | | 0 = Beginning of zero-padded selected numbers
+    //        | | | N = No "Extra!" option, Y = Yes
+    //        | | C = Cash Option, A = Annual
+    //        | 1 = 1 drawing per ticket
+    //        L = "Lottery" game, M = Mega Millions
+
     let qrString = 'LOT21:WLD1JCMNS';
-    drawings.forEach(drawing => {
-        if (drawing.length !== 6) {
-            throw new Error(`Invalid number of numbers to append to QR string. Must be exactly 6: '${prettyJson(drawing)}'`);
+    combos.forEach(combo => {
+        if (combo.length !== 6) {
+            throw new Error(`Invalid number of numbers to append to QR string. Must be exactly 6: '${prettyJson(combo)}'`);
         }
-        drawing.forEach(number => {
+        combo.forEach(number => {
             qrString += String(number).padStart(2, 0);
         });
     });
@@ -27,10 +27,10 @@ export function qrString(drawings) {
 }
 
 // Generate QR image
-export async function generateQR(filename, text, errorLevel = 'Q') {
+export async function generateQR(filename, text) {
     console.log(`Trying to generate QR code for text: '${text}'.`);
     try {
-        await qrCode.toFile(filename, text, { errorCorrectionLevel: errorLevel });
+        await qrCode.toFile(filename, text, { errorCorrectionLevel: 'L' });
     } catch (error) {
         throw new Error(`Could not generate QR code: '${error}'`);
     }
@@ -123,7 +123,7 @@ export function asyncWriteFile(filename, contents) {
 }
 
 export function ticketHtml(combos) {
-    return combos.map(c=>c.join('-')).join('<br />\n');
+    return combos.map(c => c.join(' - ')).join('<br />\n');
 }
 
 export function pairKey(num1, num2) {

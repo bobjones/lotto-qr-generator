@@ -8,7 +8,7 @@ The value of this QR code is `LOT21:WLD1JCMNS010203040506495051525354`. After ch
 
 ```
 LOT21:WLD1JCMNS010203040506495051525354
-       | | | | ^ Beginning of selected numbers
+       | | | | 0 = Beginning of zero-padded selected numbers
        | | | N = No "Extra!" option, Y = Yes
        | | C = Cash Option, A = Annual
        | 1 = 1 drawing per ticket
@@ -17,7 +17,7 @@ LOT21:WLD1JCMNS010203040506495051525354
 
 Taking this into account, I initially wrote a shell script to scrape a website with suggested combinations, then generate my own QR code based on those numbers. However, at the time, the page didn't have any randomness to it, so it meant that if someone else used suggestions from that page, I would be sharing my winnings with them.
 
-So I re-wrote it in Node, and threw it on an ec2 instance that I could hit from my phone when I go to the grocery store. This script generates a page that looks for highest frequency pairs and singles over the last "x" number of drawings. I'm currently using 150 drawings, but if you want to use this as well, please change this number so we're less likely to share winnings!!!
+So I re-wrote it in Node, and threw it on an ec2 instance that I could hit from my phone when I go to the grocery store. This script generates a page that looks for highest frequency pairs and singles over the last "x" number of drawings. If you copy/paste from this documentation, you will look back at the last 100 drawings, but if you want to use this as well, change this number so you're less likely to share winnings with someone else!!!
 
 Here's what the final [index.html](build/index.html) looks like in a browser:
 
@@ -54,15 +54,48 @@ git clone https://github.com/mrbbdx/lotto-qr-generator
 
 This pulls all past drawings (since 1992!) for the TX lotto game from the official website, then generates QR codes for best combinations.
 
-### Setup Node
+### Setup VSCode for running and debugging locally
 
-Google install nvm. Today it's:
+Add a `.vscode/launch.json` file that looks like this, except change your `PREVIOUS_DRAWINGS` number to something other than 100.
+
+👇 Change your `PREVIOUS_DRAWINGS` number here! 👇
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "env": {
+                "PREVIOUS_DRAWINGS": "100"
+            },
+            "program": "${workspaceFolder}/src/index.js",
+            "internalConsoleOptions": "openOnSessionStart"
+        }
+    ]
+}
+```
+
+☝️ Change your `PREVIOUS_DRAWINGS` number here! ☝️
+
+### Setup Node and Packages on EC2 Instance
+
+Google "Install nvm", then install latest Node LTS. Today, that command would be:
 
 ```sh
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source ~/.bashrc
 nvm install --lts
+```
 
+Then install packages
+
+```sh
 cd ~/lotto-qr-generator
 npm install
 ```
@@ -79,11 +112,15 @@ ln -s ~/lotto-qr-generator/build lotto
 
 ### Add systemd timer to re-generate page every night
 
+Since Amazon Linux deprecated `crontab`, they suggest using `systemd` instead. Here's how to do that.
+
 ```sh
 sudo vi /etc/systemd/system/lotto.service
 ```
 
-```
+👇 Change your `PREVIOUS_DRAWINGS` number here! 👇
+
+```conf
 [Unit]
 Description=Generate Lotto Page
 
@@ -91,14 +128,17 @@ Description=Generate Lotto Page
 Type=simple
 TimeoutSec=10
 WorkingDirectory=/home/ec2-user/lotto-qr-generator
+Environment="PREVIOUS_DRAWINGS=100"
 ExecStart=/home/ec2-user/.nvm/versions/node/v20.13.1/bin/node src/index.js
 ```
+
+☝️ Change your `PREVIOUS_DRAWINGS` number here! ☝️
 
 ```sh
 sudo vi /etc/systemd/system/lotto.timer
 ```
 
-```
+```conf
 [Unit]
 Description=Run script every 9:00 AM UTC
 
